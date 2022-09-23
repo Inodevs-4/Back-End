@@ -26,9 +26,10 @@ export default class LancamentoController {
                     projeto: true,
                     verbas: true
                 },
+                take: 4,
                 order: {
                     id: "DESC"
-                }   
+                }
             })
             return res.json(lancamentos)
         } catch (error) {
