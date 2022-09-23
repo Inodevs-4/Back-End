@@ -39,4 +39,19 @@ export default class LancamentoController {
 
     }
 
+    async atualizarLancamento(req: Request, res: Response) {
+        const { id } = req.params
+        const { modalidade, data_inicio, data_fim, observacoes, colaborador, gestor, projeto, status } = req.body
+
+        try {
+            const novoLancamento = AppDataSource.manager.create(Lancamento,{ id: Number(id), modalidade, data_inicio, data_fim, observacoes, colaborador, gestor, projeto, status })
+            await AppDataSource.manager.save(Lancamento, novoLancamento)
+
+            return res.json(novoLancamento)
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
+    }
+
 }
