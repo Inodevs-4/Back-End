@@ -27,7 +27,7 @@ export class Lancamento {
     @Column({type: "enum", enum:['aprovado', 'pendente', 'reprovado'], default: 'pendente', nullable: false})
     status: Status
 
-	@ManyToOne(() => Colaborador, colaborador => colaborador.lancamentos, { onDelete: 'CASCADE' })
+	@ManyToOne(() => Colaborador, colaborador => colaborador.lancamentos_colaborador, { onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'colaborador_id' })
 	colaborador: Colaborador
 
@@ -37,5 +37,9 @@ export class Lancamento {
 
 	@ManyToMany(() => Verba, verba => verba.lancamentos)
 	verbas: Verba[]
+
+    @ManyToOne(() => Colaborador, gestor => gestor.lancamentos_gestor, { onDelete: 'CASCADE' })
+	@JoinColumn({ name: 'gestor_id' })
+	gestor: Colaborador
 
 }

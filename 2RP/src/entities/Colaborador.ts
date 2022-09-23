@@ -13,7 +13,7 @@ export class Colaborador {
     @Column({length: 100, nullable: false})
     nome: string
 
-    @Column({nullable: false})
+    @Column({nullable: false, unique: true})
     matricula: number
 
     @Column({length: 50, nullable: false})
@@ -29,14 +29,13 @@ export class Colaborador {
     perfil: Perfil
 
     @OneToMany(() => Lancamento, lancamento => lancamento.colaborador)
-	lancamentos: Lancamento[]
+	lancamentos_colaborador: Lancamento[]
 
     @ManyToOne(() => CR, CR => CR.colaboradores, { onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'cr_id' })
 	cr: CR
 
-	@ManyToOne(() => Colaborador, colaborador => colaborador.gestor, { onDelete: 'CASCADE' })
-	@JoinColumn({ name: 'gestor_id' })
-	gestor: Colaborador
+    @OneToMany(() => Lancamento, lancamento=> lancamento.gestor)
+	lancamentos_gestor: Lancamento[]
 
 }

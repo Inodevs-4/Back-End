@@ -8,9 +8,9 @@ export default class ColaboradorController {
         try {
             const colaboradores = await AppDataSource.manager.find(Colaborador, {
                 relations: {
-                    lancamentos: true,
                     cr: true,
-                    gestor: true
+                    lancamentos_colaborador: true,
+                    lancamentos_gestor: true
                 },
                 order: {
                     nome: "ASC"
@@ -24,25 +24,27 @@ export default class ColaboradorController {
         }
     }
 
-    async getColaborador (req: Request, res: Response){
-        const { id } = req.params
-    
+    async selectGestores(req: Request, res: Response){
         try {
-            const colaborador = await AppDataSource.manager.find(Colaborador, {
-                    relations: {
-                        lancamentos: true,
-                        cr: true,
-                        gestor: true
-                    },
-                    where: {
-                        id: Number(id)
-                    }
-                })
-            res.json(colaborador[0])
-        } catch(error) {
-                console.log(error)
-                return res.json({message: "Internal Server Error"})
-            }
+            const colaboradores = await AppDataSource.manager.find(Colaborador, {
+                relations: {
+                    cr: true,
+                    lancamentos_colaborador: true,
+                    lancamentos_gestor: true
+                },
+                order: {
+                    nome: "ASC"
+                },
+                where: {
+                    perfil: "gestor"
+                }
+                }
+            )
+            return res.json(colaboradores)
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
     }
-    
+
 }

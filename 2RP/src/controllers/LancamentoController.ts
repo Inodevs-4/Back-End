@@ -5,10 +5,10 @@ import { Lancamento } from "../entities/Lancamento";
 export default class LancamentoController {
 
     async salvarLancamento(req: Request, res: Response) {
-        const { modalidade, data_inicio, data_fim, observacoes, colaborador, projeto } = req.body
+        const { modalidade, data_inicio, data_fim, observacoes, colaborador, gestor, projeto } = req.body
 
         try {
-            const novoLancamento = AppDataSource.manager.create(Lancamento, { modalidade, data_inicio, data_fim, observacoes, colaborador, projeto })
+            const novoLancamento = AppDataSource.manager.create(Lancamento, { modalidade, data_inicio, data_fim, observacoes, colaborador, gestor, projeto })
             await AppDataSource.manager.save(Lancamento, novoLancamento)
 
             return res.json(novoLancamento)

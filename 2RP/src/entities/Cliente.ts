@@ -10,7 +10,7 @@ export class Cliente {
     @Column({length: 100, nullable: false})
     nome: string
 
-    @Column({length: 20, nullable: false})
+    @Column({length: 20, nullable: false, unique: true})
     cnpj: string
 
     @Column({nullable: true, type: "text"})
