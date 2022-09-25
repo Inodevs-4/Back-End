@@ -19,11 +19,14 @@ export class Colaborador {
     @Column({length: 50, nullable: false})
     turno: string
 
-    @Column({length: 100, nullable:false})
+    @Column({length: 100, nullable: false})
     email: string
 
-    @Column({length: 20, nullable:false})
+    @Column({length: 20, nullable: false})
     telefone: string
+
+    @Column({length: 255, nullable: false})
+    senha: string
 
     @Column({type: "enum", enum:['administrador', 'gestor', 'colaborador'], default: 'colaborador', nullable: false})
     perfil: Perfil

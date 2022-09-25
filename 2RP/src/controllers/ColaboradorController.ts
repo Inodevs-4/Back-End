@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import { AppDataSource } from "../data-source"
 import { Colaborador } from "../entities/Colaborador"
+import * as bcrypt from "bcrypt"
 
 export default class ColaboradorController {
 
@@ -48,13 +49,16 @@ export default class ColaboradorController {
     }
 
     async salvarColaborador(req: Request, res: Response) {
-        const { nome, matricula, turno, email, telefone, perfil, cr } = req.body
+        const { nome, matricula, turno, email, telefone, senha, perfil, cr } = req.body
+        
+        const hashSenha = await bcrypt.hash(senha, 10)
 
         try {
-            const novoColaborador = AppDataSource.manager.create(Colaborador, { nome, matricula, turno, email, telefone, perfil, cr })
+            const novoColaborador = AppDataSource.manager.create(Colaborador, { nome, matricula, turno, email, telefone, senha: hashSenha, perfil, cr })
             await AppDataSource.manager.save(Colaborador, novoColaborador)
 
-            return res.json(novoColaborador)
+            const { senha: _, ...colaborador } = novoColaborador 
+            return res.json(colaborador)
         } catch (error) {
             console.log(error)
             return res.json({message: "Internal Server Error"})
