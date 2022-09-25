@@ -1,12 +1,17 @@
-import { DataSource } from "typeorm"
+import { DataSource, DataSourceOptions } from "typeorm"
 import 'dotenv/config'
+import { SeederOptions } from "typeorm-extension"
+import { MainSeeder } from "./seeds/MainSeeder"
 
-export const AppDataSource = new DataSource({
+const options: DataSourceOptions & SeederOptions = {
     url: process.env.DATABASE_URL,
     type: "postgres",
 	entities: [`${__dirname}/**/entities/*.{ts,js}`],
-	migrations: [`${__dirname}/**/migrations/*.{ts,js}`]
-})
+	migrations: [`${__dirname}/**/migrations/*.{ts,js}`],
+	seeds: [MainSeeder]
+}
+
+export const AppDataSource = new DataSource(options)
 
 AppDataSource
     .initialize()
