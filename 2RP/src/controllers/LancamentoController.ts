@@ -39,6 +39,25 @@ export default class LancamentoController {
 
     }
 
+    async todosLancamentos(req: Request, res: Response){
+        try {
+            const lancamentos = await AppDataSource.manager.find(Lancamento, {
+                relations: {
+                    colaborador: true,
+                    projeto: true,
+                    verbas: true
+                },
+                order: {
+                    id: "DESC"
+                }
+            })
+            return res.json(lancamentos)
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }  
+    }
+
     async atualizarLancamento(req: Request, res: Response) {
         const { id } = req.params
         const { modalidade, data_inicio, data_fim, observacoes, colaborador, gestor, projeto, status } = req.body
@@ -53,5 +72,20 @@ export default class LancamentoController {
             return res.json({message: "Internal Server Error"})
         }
     }
+
+    async excluirLancamento(req: Request, res: Response) {
+        const { id } = req.params
+
+        try {
+            const lancamento = await AppDataSource.manager.findOneBy(Lancamento, { id: Number(id) })
+            await AppDataSource.manager.delete(Lancamento, lancamento)
+
+            return res.json(lancamento)
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
+
+    }   
 
 }
