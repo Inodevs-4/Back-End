@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../data-source"
+import { Colaborador } from "../entities/Colaborador";
 import { Lancamento } from "../entities/Lancamento";
 
 export default class LancamentoController {
@@ -20,6 +21,10 @@ export default class LancamentoController {
 
     async meusLancamentos(req: Request, res: Response) {
         try {
+            const { id } = req.params
+
+            const colaborador = await AppDataSource.manager.findOneBy(Colaborador, { id: Number(id) })
+
             const lancamentos = await AppDataSource.manager.find(Lancamento, {
                 relations: {
                     colaborador: true,
@@ -27,6 +32,7 @@ export default class LancamentoController {
                     verbas: true
                 },
                 take: 4,
+                where: { colaborador },
                 order: {
                     id: "DESC"
                 }
