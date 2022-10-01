@@ -64,6 +64,20 @@ export default class LancamentoController {
         }  
     }
 
+    async getLancamento(req: Request, res: Response){
+        const { id } = req.params
+
+        try {
+            const colaborador = await AppDataSource.manager.findOneBy(Colaborador, { id: Number(id) })
+
+            return res.json(colaborador)
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
+       
+    }
+
     async atualizarLancamento(req: Request, res: Response) {
         const { id } = req.params
         const { modalidade, data_inicio, data_fim, observacoes, colaborador, gestor, projeto, status } = req.body
