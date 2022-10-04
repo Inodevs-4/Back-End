@@ -1,20 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from "typeorm"
+import { Entity, Column, OneToMany, ManyToOne, JoinColumn, PrimaryColumn } from "typeorm"
 import { CR } from "./CR"
 import { Lancamento } from "./Lancamento"
 
 export type Perfil = 'administrador' | 'gestor' | 'colaborador'
+export type Status = 'ativo' | 'inativo'
 
 @Entity('colaboradores')
 export class Colaborador {
 
-    @PrimaryGeneratedColumn()
-    id: number
+    @PrimaryColumn()
+    matricula: number
 
     @Column({length: 100, nullable: false})
     nome: string
-
-    @Column({nullable: false, unique: true})
-    matricula: number
 
     @Column({length: 50, nullable: false})
     turno: string
@@ -30,6 +28,9 @@ export class Colaborador {
 
     @Column({type: "enum", enum:['administrador', 'gestor', 'colaborador'], default: 'colaborador', nullable: false})
     perfil: Perfil
+    
+    @Column({type: "enum", enum:['ativo', 'inativo'], default: 'ativo', nullable: false})
+    status: Status
 
     @OneToMany(() => Lancamento, lancamento => lancamento.colaborador)
 	lancamentos_colaborador: Lancamento[]

@@ -1,14 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, ManyToMany, JoinTable } from "typeorm"
+import { Entity, Column, ManyToMany, JoinTable, PrimaryColumn } from "typeorm"
 import { Lancamento } from './Lancamento'
 
 @Entity('verbas')
 export class Verba {
 
-    @PrimaryGeneratedColumn()
-    id: number
-
-    @Column({nullable: false})
-    verba: number
+	@PrimaryColumn()
+    numero: number
 
     @Column({nullable: false, type: "decimal"})
     adicional: number
@@ -26,11 +23,11 @@ export class Verba {
 	@JoinTable({
 		name: 'lancamento_verba',
 		joinColumn: {
-			name: 'lançamento_id',
-			referencedColumnName: 'id',
+			name: 'verba_numero',
+			referencedColumnName: 'numero',
 		},
 		inverseJoinColumn: {
-			name: 'verba_id',
+			name: 'lancamento_id',
 			referencedColumnName: 'id',
 		},
 	})

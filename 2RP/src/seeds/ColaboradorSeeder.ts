@@ -16,11 +16,28 @@ export class ColaboradorSeeder implements Seeder {
         const perfGestor: Perfil = 'gestor'
         const perfAdministrador: Perfil = 'administrador'
 
+        const inodevs = {
+            matricula: 2022,
+            nome: "Inodevs",
+            turno: "Manhã",
+            email: "api@inodevs.com",
+            telefone: "(12)99999-2022",
+            perfil: perfAdministrador,
+            senha: await bcrypt.hash('123', 10),
+            cr: squad
+        }   
+
+		const inodevsExists = await colaboradorRepository.findOneBy({ email: inodevs.email })
+
+		if (!inodevsExists) {
+            const newInodevs = colaboradorRepository.create(inodevs)
+            await colaboradorRepository.save(newInodevs)
+		}
 
         const administrador = {
-            nome: "Administrador",
             matricula: 10000,
-            turno: "diurno",
+            nome: "Administrador",
+            turno: "Madrugada",
             email: "adm@mail.com",
             telefone: "(12)99999-9990",
             perfil: perfAdministrador,
@@ -38,7 +55,7 @@ export class ColaboradorSeeder implements Seeder {
         const colaborador1 = {
             nome: "Colaborador 1",
             matricula: 12345,
-            turno: "diurno",
+            turno: "Tarde",
             email: "colaborador1@mail.com",
             telefone: "(12)99999-9999",
             perfil: perfColaborador,
@@ -56,7 +73,7 @@ export class ColaboradorSeeder implements Seeder {
         const colaborador2 = {
             nome: "Colaborador 2",
             matricula: 12346,
-            turno: "noturno",
+            turno: "Noite",
             email: "colaborador2@mail.com",
             telefone: "(12)99999-9998",
             perfil: perfColaborador,
@@ -74,7 +91,7 @@ export class ColaboradorSeeder implements Seeder {
         const gestor1 = {
             nome: "Gestor 1",
             matricula: 12347,
-            turno: "diurno",
+            turno: "Tarde",
             email: "gestor1@mail.com",
             telefone: "(12)99999-9997",
             perfil: perfGestor,
@@ -92,7 +109,7 @@ export class ColaboradorSeeder implements Seeder {
         const gestor2  = {
             nome: "Gestor 2",
             matricula: 12348,
-            turno: "noturno",
+            turno: "Noite",
             email: "gestor2@mail.com",
             telefone: "(12)99999-9996",
             perfil: perfGestor,

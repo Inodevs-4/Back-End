@@ -5,6 +5,7 @@ import { Verba } from "./Verba"
 
 export type Status = 'aprovado' | 'pendente' | 'reprovado'
 export type Modalidade = 'hora extra' | 'sobreaviso'
+export type Tipo = 'continuo' | 'escalonado'
 
 @Entity('lancamentos')
 export class Lancamento {
@@ -23,6 +24,15 @@ export class Lancamento {
 
     @Column({nullable: true, type: "text"})
     observacoes: string
+
+    @Column({type: "enum", enum:['continuo', 'escalonado'], default:'continuo', nullable: false})
+    tipo: Tipo
+
+    @Column({nullable: true})
+    data_inicio2: Date
+
+    @Column({nullable: true})
+    data_fim2: Date
 
     @Column({type: "enum", enum:['aprovado', 'pendente', 'reprovado'], default: 'pendente', nullable: false})
     status: Status

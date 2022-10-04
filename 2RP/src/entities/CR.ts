@@ -1,15 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm"
+import { Entity, Column, OneToMany, PrimaryColumn } from "typeorm"
 import { Colaborador } from "./Colaborador"
 
 @Entity('crs')
 export class CR {
 
-    @PrimaryGeneratedColumn()
-    id: number
-
-    @Column({nullable: false})
+    @PrimaryColumn()
     numero: number
-
+    
     @Column({length: 100,nullable: false})
     nome: string
 

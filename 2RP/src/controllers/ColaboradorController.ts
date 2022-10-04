@@ -65,12 +65,25 @@ export default class ColaboradorController {
         }
     }
 
-    async atualizarColaborador(req: Request, res: Response) {
+    async getColaborador(req: Request, res: Response) {
         const { id } = req.params
-        const { nome, matricula, turno, email, telefone, perfil, cr } = req.body
 
         try {
-            const novoColaborador = AppDataSource.manager.create(Colaborador, { id: Number(id), nome, matricula, turno, email, telefone, perfil, cr })
+            const lancamento = await AppDataSource.manager.findOneBy(Colaborador, { matricula: Number(id) })
+
+            return res.json(lancamento)
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
+    }
+
+    async atualizarColaborador(req: Request, res: Response) {
+        const { id } = req.params
+        const { nome, turno, email, telefone, perfil, cr, status, senha } = req.body
+
+        try {
+            const novoColaborador = AppDataSource.manager.create(Colaborador, { matricula: Number(id), nome, turno, email, telefone, perfil, cr, status, senha })
             await AppDataSource.manager.save(Colaborador, novoColaborador)
 
             return res.json(novoColaborador)
@@ -84,7 +97,7 @@ export default class ColaboradorController {
         const { id } = req.params
         
         try {
-            const colaborador = await AppDataSource.manager.findOneBy(Colaborador, { id: Number(id) })
+            const colaborador = await AppDataSource.manager.findOneBy(Colaborador, { matricula: Number(id) })
             await AppDataSource.manager.delete(Colaborador, colaborador)
 
             return res.json(colaborador)

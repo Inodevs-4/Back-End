@@ -23,7 +23,7 @@ export default class LancamentoController {
         try {
             const { id } = req.params
 
-            const colaborador = await AppDataSource.manager.findOneBy(Colaborador, { id: Number(id) })
+            const colaborador = await AppDataSource.manager.findOneBy(Colaborador, { matricula: Number(id) })
 
             const lancamentos = await AppDataSource.manager.find(Lancamento, {
                 relations: {
@@ -68,9 +68,9 @@ export default class LancamentoController {
         const { id } = req.params
 
         try {
-            const colaborador = await AppDataSource.manager.findOneBy(Colaborador, { id: Number(id) })
+            const lancamento = await AppDataSource.manager.findOneBy(Lancamento, { id: Number(id) })
 
-            return res.json(colaborador)
+            return res.json(lancamento)
         } catch (error) {
             console.log(error)
             return res.json({message: "Internal Server Error"})

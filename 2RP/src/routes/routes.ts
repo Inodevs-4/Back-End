@@ -6,9 +6,9 @@ import routesLogin from './routesLogin'
 
 const routes = Router()
 
+routes.use('/', routesLogin)
 routes.use('/', routesLancamento)
 routes.use('/', routesProjeto)
 routes.use('/', routesColaborador)
-routes.use('/', routesLogin)
 
 export default routes

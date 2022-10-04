@@ -41,9 +41,9 @@ export default class LoginController {
         const token = authorization.split(' ')[1]
 
         try {
-            const { id } = jwt.verify(token, process.env.JWT_PASS ?? '') as { id: number }
+            const { matricula } = jwt.verify(token, process.env.JWT_PASS ?? '') as { matricula: number }
     
-            const usuario: any = await AppDataSource.manager.findOneBy(Colaborador, { id })
+            const usuario: any = await AppDataSource.manager.findOneBy(Colaborador, { matricula })
          
             if (!usuario) {
                 return res.json({message: "Internal Server Error"})
