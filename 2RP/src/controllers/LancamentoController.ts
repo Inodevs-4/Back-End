@@ -68,9 +68,16 @@ export default class LancamentoController {
         const { id } = req.params
 
         try {
-            const lancamento = await AppDataSource.manager.findOneBy(Lancamento, { id: Number(id) })
+            const lancamentos = await AppDataSource.manager.find(Lancamento, {
+                relations: {
+                    colaborador: true,
+                    projeto: true,
+                    verbas: true
+                },
+                where: { id: Number(id) },
+            })
 
-            return res.json(lancamento)
+            return res.json(lancamentos[0])
         } catch (error) {
             console.log(error)
             return res.json({message: "Internal Server Error"})
