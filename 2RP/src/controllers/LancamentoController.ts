@@ -134,4 +134,34 @@ export default class LancamentoController {
 
     }   
 
+    async aprovarLancamento(req: Request, res: Response) {
+        const { id } = req.params
+
+        try {
+            const lancamento = await AppDataSource.manager.findOneBy(Lancamento, { id: Number(id) })
+            lancamento.status = "aprovado"
+            await AppDataSource.manager.save(Lancamento, lancamento)
+
+            return res.json(lancamento)
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
+    }
+
+    async reprovarLancamento(req: Request, res: Response) {
+        const { id } = req.params
+
+        try {
+            const lancamento = await AppDataSource.manager.findOneBy(Lancamento, { id: Number(id) })
+            lancamento.status = "reprovado"
+            await AppDataSource.manager.save(Lancamento, lancamento)
+
+            return res.json(lancamento)
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
+    }
+
 }
