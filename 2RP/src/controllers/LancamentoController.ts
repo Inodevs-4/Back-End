@@ -6,7 +6,17 @@ import { Lancamento } from "../entities/Lancamento";
 export default class LancamentoController {
 
     async salvarLancamento(req: Request, res: Response) {
-        const { modalidade, data_inicio, data_fim, data_inicio2, data_fim2, acionado, observacoes, colaborador, gestor, projeto } = req.body
+        const { modalidade, data_inicio, data_fim, observacoes, colaborador, gestor, projeto } = req.body
+        let { acionado, data_inicio2, data_fim2, } = req.body
+        
+        if (acionado !== "sim" && acionado !== "nao") {
+            acionado = "nao"
+        }
+
+        if (acionado === "nao") {
+            data_inicio2 = null
+            data_fim2 = null
+        }
 
         try {
             const novoLancamento = AppDataSource.manager.create(Lancamento, { modalidade, data_inicio, data_fim, data_inicio2, data_fim2, acionado, observacoes, colaborador, gestor, projeto })
@@ -29,7 +39,8 @@ export default class LancamentoController {
                 relations: {
                     colaborador: true,
                     projeto: true,
-                    verbas: true
+                    verbas: true,
+                    gestor: true
                 },
                 take: 4,
                 where: { colaborador },
@@ -51,7 +62,8 @@ export default class LancamentoController {
                 relations: {
                     colaborador: true,
                     projeto: true,
-                    verbas: true
+                    verbas: true,
+                    gestor: true
                 },
                 order: {
                     id: "DESC"
@@ -72,7 +84,8 @@ export default class LancamentoController {
                 relations: {
                     colaborador: true,
                     projeto: true,
-                    verbas: true
+                    verbas: true,
+                    gestor: true
                 },
                 where: { id: Number(id) },
             })
@@ -87,10 +100,16 @@ export default class LancamentoController {
 
     async atualizarLancamento(req: Request, res: Response) {
         const { id } = req.params
-        const { modalidade, data_inicio, data_fim, observacoes, colaborador, gestor, projeto, status } = req.body
+        const { modalidade, data_inicio, data_fim, acionado, observacoes, colaborador, gestor, projeto, status } = req.body
+        let { data_inicio2, data_fim2, } = req.body
+
+        if (acionado === "nao") {
+            data_inicio2 = null
+            data_fim2 = null
+        }
 
         try {
-            const novoLancamento = AppDataSource.manager.create(Lancamento,{ id: Number(id), modalidade, data_inicio, data_fim, observacoes, colaborador, gestor, projeto, status })
+            const novoLancamento = AppDataSource.manager.create(Lancamento,{ id: Number(id), modalidade, data_inicio, data_fim, data_inicio2, data_fim2, observacoes, colaborador, gestor, projeto, status, acionado })
             await AppDataSource.manager.save(Lancamento, novoLancamento)
 
             return res.json(novoLancamento)
