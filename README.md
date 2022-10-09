@@ -4,7 +4,6 @@
 
 No diretório do projeto, executar:
 
-##### `cd 2RP`
 ##### `npm install`
 ##### `npm run dev`
 
