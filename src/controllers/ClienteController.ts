@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import { AppDataSource } from "../data-source"
 import { Cliente } from "../entities/Cliente"
 
-export default class LancamentoController {
+export default class ClienteController {
 
     async salvarCliente(req: Request, res: Response) {
         const { cnpj, nome, contato } = req.body
@@ -25,7 +25,7 @@ export default class LancamentoController {
                     projetos: true,
                 },
                 order: {
-                    cnpj: "DESC"
+                    nome: "ASC"
                 }
             })
             return res.json(clientes)
