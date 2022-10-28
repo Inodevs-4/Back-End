@@ -21,7 +21,7 @@ export default class LoginController {
             return res.json({message: "Senha inválida!"})
         }
 
-        const token = jwt.sign({ id: usuario.id }, process.env.JWT_PASS ?? '', {expiresIn: "8h"})
+        const token = jwt.sign({ matricula: usuario.matricula }, process.env.JWT_PASS ?? '', {expiresIn: "8h"})
 
         const { senha: _, ...usuarioLogin } = usuario
 
