@@ -17,7 +17,7 @@ export default class ClienteController {
             return res.json({message: "Internal Server Error"})
         }
     }
-
+    
     async todosClientes(req: Request, res: Response){
         try {
             const clientes = await AppDataSource.manager.find(Cliente, {

@@ -31,9 +31,9 @@ export default class LancamentoController {
 
     async meusLancamentos(req: Request, res: Response) {
         try {
-            const { id } = req.params
+            const { matricula } = req.params
 
-            const colaborador = await AppDataSource.manager.findOneBy(Colaborador, { matricula: Number(id) })
+            const colaborador = await AppDataSource.manager.findOneBy(Colaborador, { matricula: Number(matricula) })
 
             const lancamentos = await AppDataSource.manager.find(Lancamento, {
                 relations: {
@@ -164,4 +164,33 @@ export default class LancamentoController {
         }
     }
 
+    async horasTrabalhadas(req: Request, res: Response){
+        const { matricula } = req.params
+
+        try {
+
+            const colaborador = await AppDataSource.manager.findOneBy(Colaborador, { matricula: Number(matricula) })
+
+            const lancamentos = await AppDataSource.manager.find(Lancamento, {
+                where: { colaborador: colaborador },
+            })
+
+            let totalMinutos = 0
+            lancamentos.forEach(
+                (l) => {
+                    totalMinutos += Math.round((l.data_fim.getTime() - l.data_inicio.getTime()) / 60000)
+                    if (l.acionado == 'sim'){
+                        totalMinutos += Math.round((l.data_fim2.getTime() - l.data_inicio2.getTime()) / 60000)
+                    }
+                }
+            )
+
+            const horas = Math.floor(totalMinutos/60)
+
+            return res.json({horas})
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
+    }
 }
