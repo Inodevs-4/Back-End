@@ -12,5 +12,6 @@ routesLancamento.delete('/excluirLancamento/:id', new LancamentoController().exc
 routesLancamento.put('/aprovarLancamento/:id', new LancamentoController().aprovarLancamento)
 routesLancamento.put('/reprovarLancamento/:id', new LancamentoController().reprovarLancamento)
 routesLancamento.get('/horasTrabalhadas/:matricula', new LancamentoController().horasTrabalhadas)
+routesLancamento.get('/gestorLancamentos/:matricula', new LancamentoController().gestorLancamentos)
 
 export default routesLancamento

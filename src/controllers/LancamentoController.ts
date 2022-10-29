@@ -193,4 +193,31 @@ export default class LancamentoController {
             return res.json({message: "Internal Server Error"})
         }
     }
+
+    async gestorLancamentos(req: Request, res: Response) {
+        try {
+            const { matricula } = req.params
+
+            const gestor = await AppDataSource.manager.findOneBy(Colaborador, { matricula: Number(matricula) })
+
+            const lancamentos = await AppDataSource.manager.find(Lancamento, {
+                relations: {
+                    colaborador: true,
+                    projeto: true,
+                    verbas: true,
+                    gestor: true
+                },
+                where: { gestor },
+                order: {
+                    id: "DESC"
+                }
+            })
+            return res.json(lancamentos)
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
+
+    }
+
 }
