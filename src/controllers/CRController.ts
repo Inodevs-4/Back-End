@@ -5,10 +5,10 @@ import { CR } from "../entities/CR"
 export default class CRController {
 
     async salvarCR(req: Request, res: Response) {
-        const { numero, nome } = req.body
+        const { numero, nome, colaboradores } = req.body
 
         try {
-            const novoCR = AppDataSource.manager.create(CR, { numero, nome })
+            const novoCR = AppDataSource.manager.create(CR, { numero, nome, colaboradores })
             await AppDataSource.manager.save(CR, novoCR)
 
             return res.json(novoCR)
