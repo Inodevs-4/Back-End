@@ -56,10 +56,10 @@ export default class ClienteController {
 
     async atualizarCliente(req: Request, res: Response) {
         const { cnpj } = req.params
-        const { nome, contato } = req.body
+        const { nome, contato, status } = req.body
         
         try {
-            const novoCliente = AppDataSource.manager.create(Cliente,{ cnpj, nome, contato})
+            const novoCliente = AppDataSource.manager.create(Cliente,{ cnpj, nome, contato, status})
             await AppDataSource.manager.save(Cliente, novoCliente)
 
             return res.json(novoCliente)
