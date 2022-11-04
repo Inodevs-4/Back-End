@@ -10,18 +10,15 @@ export default class CRController {
         const { numero } = req.params
 
         try {
-            const cr= await AppDataSource.manager.findOneBy(CR, { numero: Number(numero) })
             const colaboradores = await AppDataSource.manager.find(Colaborador, {
                 relations: {
                     cr: true,
-                    lancamentos_colaborador: true,
-                    lancamentos_gestor: true
                 },
                 order: {
                     nome: "ASC"
                 },
                 where: {
-                    cr: Not(cr)
+                    cr: Not(numero)
                 }
                 }
             )
@@ -84,10 +81,10 @@ export default class CRController {
 
     async atualizarCR(req: Request, res: Response) {
         const { numero } = req.params
-        const { nome } = req.body
+        const { nome, status, colaboradores } = req.body
         
         try {
-            const novoCR = AppDataSource.manager.create(CR,{ numero: Number(numero), nome })
+            const novoCR = AppDataSource.manager.create(CR,{ numero: Number(numero), nome, status, colaboradores })
             await AppDataSource.manager.save(CR, novoCR)
 
             return res.json(novoCR)
