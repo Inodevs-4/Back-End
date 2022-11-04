@@ -11,7 +11,7 @@ export class CRSeeder implements Seeder {
             numero: 123
         }   
 
-		const squadExists = await CRRepository.findOneBy({ nome: squad.nome })
+		const squadExists = await CRRepository.findOneBy({ numero: squad.numero })
 
 		if (!squadExists) {
             const novoSquad = CRRepository.create(squad)
@@ -23,18 +23,19 @@ export class CRSeeder implements Seeder {
             numero: 234
         }   
 
-		const triboExists = await CRRepository.findOneBy({ nome: tribo.nome})
+		const triboExists = await CRRepository.findOneBy({ numero: tribo.numero})
 
 		if (!triboExists) {
             const novaTribo = CRRepository.create(tribo)
             await CRRepository.save(novaTribo)
 		}
+        
         const departamento = {
             nome: "Departamento 1",
             numero: 345
         }   
 
-		const departamentoExists = await CRRepository.findOneBy({ nome: departamento.nome })
+		const departamentoExists = await CRRepository.findOneBy({ numero: departamento.numero })
 
 		if (!departamentoExists) {
             const novoDepartamento = CRRepository.create(departamento)

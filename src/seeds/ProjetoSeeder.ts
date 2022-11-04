@@ -14,36 +14,42 @@ export class ProjetoSeeder implements Seeder {
 
 
         const projeto1 = {
+            id: 1,
             nome: "Projeto 1",
             cr: squad
         }   
 
-		const projeto1Exists = await projetoRepository.findOneBy({ nome: projeto1.nome })
+		const projeto1Exists = await projetoRepository.findOneBy({ id: projeto1.id })
 
 		if (!projeto1Exists) {
+            console.log('entrou!')
             const novoProjeto1 = projetoRepository.create(projeto1)
             await projetoRepository.save(novoProjeto1)
 		}
        
         const projeto2 = {
+            id: 2,
             nome: "Projeto 2",
             cr: tribo
         }   
 
-		const projeto2Exists = await projetoRepository.findOneBy({ nome: projeto2.nome })
+		const projeto2Exists = await projetoRepository.findOneBy({ id: projeto2.id })
 
 		if (!projeto2Exists) {
+            console.log('entrou!')
             const novoProjeto2 = projetoRepository.create(projeto2)
             await projetoRepository.save(novoProjeto2)
 		}
         const projeto3 = {
+            id: 3,
             nome: "Projeto 3",
             cr: departamento
         }   
 
-		const projeto3Exists = await projetoRepository.findOneBy({ nome: projeto3.nome })
+		const projeto3Exists = await projetoRepository.findOneBy({ id: projeto3.id })
 
 		if (!projeto3Exists) {
+            console.log('entrou!')
             const novoProjeto3 = projetoRepository.create(projeto3)
             await projetoRepository.save(novoProjeto3)
 		}
