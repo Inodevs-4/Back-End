@@ -1,8 +1,36 @@
 import { Request, Response } from "express"
 import { AppDataSource } from "../data-source"
 import { CR } from "../entities/CR"
+import { Not } from "typeorm"
+import { Colaborador } from "../entities/Colaborador"
 
 export default class CRController {
+
+    async selectColaboradoresCr(req: Request, res: Response) {
+        const { numero } = req.params
+
+        try {
+            const cr= await AppDataSource.manager.findOneBy(CR, { numero: Number(numero) })
+            const colaboradores = await AppDataSource.manager.find(Colaborador, {
+                relations: {
+                    cr: true,
+                    lancamentos_colaborador: true,
+                    lancamentos_gestor: true
+                },
+                order: {
+                    nome: "ASC"
+                },
+                where: {
+                    cr: Not(cr)
+                }
+                }
+            )
+            return res.json(colaboradores)
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
+    }
 
     async salvarCR(req: Request, res: Response) {
         const { numero, nome, colaboradores } = req.body

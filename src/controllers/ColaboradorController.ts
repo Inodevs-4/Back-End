@@ -3,6 +3,7 @@ import { AppDataSource } from "../data-source"
 import { Colaborador } from "../entities/Colaborador"
 import * as bcrypt from "bcrypt"
 
+
 export default class ColaboradorController {
 
     async selectColaboradores(req: Request, res: Response) {
