@@ -74,10 +74,10 @@ export default class ProjetoController {
 
     async atualizarProjeto(req: Request, res: Response) {
         const { id } = req.params
-        const { nome, cliente, cr } = req.body
+        const { nome, cliente, cr, status } = req.body
         
         try {
-            const novoProjeto = AppDataSource.manager.create(Projeto,{ id: Number(id), nome, cliente, cr })
+            const novoProjeto = AppDataSource.manager.create(Projeto,{ id: Number(id), nome, cliente, cr, status })
             await AppDataSource.manager.save(Projeto, novoProjeto)
 
             return res.json(novoProjeto)
