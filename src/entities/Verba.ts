@@ -10,14 +10,17 @@ export class Verba {
     @Column({nullable: false, type: "decimal"})
     adicional: number
 
-    @Column({nullable: false})
-    quantidadehoras: number
-
-    @Column({nullable: false})
+    @Column("time",{nullable: false})
     inicio: Date
 
-    @Column({nullable: false})
+    @Column("time",{nullable: false})
     fim: Date
+
+	@Column({nullable: false, default:0 })
+    evento: number
+
+	@Column({nullable: false})
+    periodo: string
 
     @ManyToMany(() => Lancamento, lancamento => lancamento.verbas)
 	@JoinTable({

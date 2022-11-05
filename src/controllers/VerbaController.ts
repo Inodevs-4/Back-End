@@ -5,10 +5,10 @@ import { Verba } from "../entities/Verba"
 export default class CRController {
 
     async salvarVerba(req: Request, res: Response) {
-        const { numero, adicional, quantidadehoras, inicio, fim } = req.body
+        const { numero, adicional, inicio, fim, evento, periodo } = req.body
 
         try {
-            const novaVerba = AppDataSource.manager.create(Verba, { numero, adicional, quantidadehoras, inicio, fim })
+            const novaVerba = AppDataSource.manager.create(Verba, { numero, adicional, inicio, fim, evento, periodo })
             await AppDataSource.manager.save(Verba, novaVerba)
 
             return res.json(novaVerba)
@@ -51,15 +51,14 @@ export default class CRController {
             console.log(error)
             return res.json({message: "Internal Server Error"})
         }
-       
     }
 
     async atualizarVerba(req: Request, res: Response) {
         const { numero } = req.params
-        const { adicional, quantidadehoras, inicio, fim } = req.body
+        const { adicional, inicio, fim, evento, periodo } = req.body
         
         try {
-            const novoCR = AppDataSource.manager.create(Verba,{ numero: Number(numero), adicional, quantidadehoras, inicio, fim })
+            const novoCR = AppDataSource.manager.create(Verba,{ numero: Number(numero), adicional, inicio, fim, evento, periodo })
             await AppDataSource.manager.save(Verba, novoCR)
 
             return res.json(novoCR)
