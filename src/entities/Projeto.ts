@@ -24,7 +24,7 @@ export class Projeto {
 	@JoinColumn({ name: 'cliente_id' })
 	cliente: Cliente
 
-    @OneToOne(() => CR)
+    @OneToOne(() => CR, cr => cr.projeto, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'cr_id' })
     cr: CR
 }
