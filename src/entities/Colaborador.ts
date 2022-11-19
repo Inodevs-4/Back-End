@@ -8,22 +8,22 @@ export type Status = 'ativo' | 'inativo'
 @Entity('colaboradores')
 export class Colaborador {
 
-    @PrimaryColumn()
+    @PrimaryColumn('bigint')
     matricula: number
 
     @Column({length: 100, nullable: false})
     nome: string
 
-    @Column({length: 50, nullable: false})
+    @Column({length: 50, nullable: true})
     turno: string
 
     @Column({length: 100, nullable: false})
     email: string
 
-    @Column({length: 20, nullable: false})
+    @Column({length: 20, nullable: true})
     telefone: string
 
-    @Column({length: 255, nullable: false})
+    @Column({length: 255, nullable: true})
     senha: string
 
     @Column({type: "enum", enum:['administrador', 'gestor', 'colaborador'], default: 'colaborador', nullable: false})

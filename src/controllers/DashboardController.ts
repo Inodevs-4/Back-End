@@ -110,11 +110,6 @@ export default class DashboardController {
             queryCampos.push(numero)
         }
         
-        queryLancamentos += `
-            GROUP BY
-                l.id, co.matricula, cr.numero, cl.cnpj
-        `
-        
         try {
             const lancamentos = await AppDataSource.query(queryLancamentos, queryCampos)
             return res.json(lancamentos)

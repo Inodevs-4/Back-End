@@ -15,6 +15,10 @@ export default class LoginController {
             return res.json({message: "Email inválido!"})
         }
 
+        if (!usuario.senha) {
+            return res.json({message: "Email inválido!"})
+        }
+
         const verificarSenha = await bcrypt.compare(senha, usuario.senha)
     
         if (!verificarSenha){
@@ -29,7 +33,30 @@ export default class LoginController {
 			usuario: usuarioLogin,
 			token: token,
 		})
-    }   
+    }
+
+    async loginOauth(req: Request, res: Response) {
+        const { email, id, nome } = req.body;
+
+        const newId = id.slice(0,18)
+      
+        try {
+            const usuario: any = await AppDataSource.manager.findOneBy(Colaborador, { email })
+
+            if (!usuario) {
+                const novoUsuario = AppDataSource.manager.create(Colaborador, { nome, matricula: Number(newId), email, perfil: 'colaborador'})
+                await AppDataSource.manager.save(Colaborador, novoUsuario)
+                
+                return res.json(novoUsuario)
+            }
+
+            return res.json(usuario)
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
+
+    }
 
     async validateToken(req: Request, res: Response) {
         const { authorization } = req.headers
