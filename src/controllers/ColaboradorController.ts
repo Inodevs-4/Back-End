@@ -79,6 +79,19 @@ export default class ColaboradorController {
         }
     }
 
+    async getColaboradorByEmail(req: Request, res: Response) {
+        const { email } = req.params
+
+        try {
+            const colaborador= await AppDataSource.manager.findOneBy(Colaborador, { email })
+
+            return res.json(colaborador)
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
+    }
+
     async atualizarColaborador(req: Request, res: Response) {
         const { id } = req.params
         const { nome, turno, email, telefone, perfil, cr, status, senha } = req.body

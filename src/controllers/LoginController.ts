@@ -36,18 +36,23 @@ export default class LoginController {
     }
 
     async loginOauth(req: Request, res: Response) {
-        const { email, id, nome } = req.body;
 
-        const newId = id.slice(0,18)
+        // const { email, id, nome } = req.body;
+
+        const { email } = req.body;
+
+        // const newId = id.slice(0,18)
       
         try {
             const usuario: any = await AppDataSource.manager.findOneBy(Colaborador, { email })
 
             if (!usuario) {
-                const novoUsuario = AppDataSource.manager.create(Colaborador, { nome, matricula: Number(newId), email, perfil: 'colaborador'})
-                await AppDataSource.manager.save(Colaborador, novoUsuario)
+                // const novoUsuario = AppDataSource.manager.create(Colaborador, { nome, matricula: Number(newId), email, perfil: 'colaborador'})
+                // await AppDataSource.manager.save(Colaborador, novoUsuario)
                 
-                return res.json(novoUsuario)
+                // return res.json(novoUsuario) 
+
+                return res.json({message: 'Usuario não cadastrado!'})
             }
 
             return res.json(usuario)
