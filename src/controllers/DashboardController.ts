@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { AppDataSource } from "../data-source"
+import { Cliente } from "../entities/Cliente";
 import { Colaborador } from "../entities/Colaborador";
+import { CR } from "../entities/CR";
 import { Lancamento } from "../entities/Lancamento";
 
 function verificarDadoGrafico1(l: Lancamento, mes: number, ano: number, modalidade: String) {
@@ -88,54 +90,37 @@ export default class DashboardController {
     async todosLancamentosFiltro(req: Request, res: Response) {
         const { matricula, cnpj, numero } = req.params
 
-        let queryLancamentos = `
-        SELECT
-            l.id, l.modalidade, l.data_inicio, l.data_fim, l.data_inicio2, l.data_fim2,
-            co.matricula,
-            cl.cnpj,
-            cr.numero
-        FROM 
-            lancamentos l, colaboradores co, crs cr, clientes cl, projetos p 
-        WHERE 
-            l.colaborador_id = co.matricula AND
-            l.projeto_id = p.id AND
-            cr.numero = p.cr_id AND
-            cl.cnpj = p.cliente_id
-        `
-        let queryCampos = []
-        let count = 1
-
-        if (matricula !== '*' || cnpj !== '*' || numero !== '*') {
-            queryLancamentos += ' AND\n'
-        }
-
-        if (matricula !== '*') {
-            if (cnpj === '*' && numero === '*'){
-                queryLancamentos +=  `co.matricula = $${count}\n`
-            } else {
-                queryLancamentos +=  `co.matricula = $${count} AND\n` 
-            }
-            queryCampos.push(matricula)
-            count += 1
-        }
-
-        if (cnpj !== '*') {
-            if (numero === '*'){
-                queryLancamentos +=  `cl.cnpj = $${count}\n`
-            } else {
-                queryLancamentos +=  `cl.cnpj = $${count} AND\n`
-            }
-            queryCampos.push(cnpj)
-            count += 1
-        }
-
-        if (numero !== '*') {
-            queryLancamentos += `cr.numero = $${count}`
-            queryCampos.push(numero)
-        }
-        
         try {
-            const lancamentos = await AppDataSource.query(queryLancamentos, queryCampos)
+            let colaborador = {}
+            let cliente = {}
+            let cr = {}
+
+            if (matricula !== "*") {
+                colaborador = await AppDataSource.manager.findOneBy(Colaborador, { matricula: Number(matricula) })
+            }
+            if (cnpj !== "*") {
+                cliente = await AppDataSource.manager.findOneBy(Cliente, { cnpj })
+            }
+            if (numero !== "*") {
+                cr = await AppDataSource.manager.findOneBy(CR, { numero: Number(numero) })
+            }
+
+            const lancamentos = await AppDataSource.manager.find(Lancamento, {
+                relations: {
+                    colaborador: true,
+                    projeto: true,
+                    verbas: true,
+                    gestor: true
+                },
+                where: { 
+                    colaborador,
+                    projeto: {cliente: cliente, cr: cr},
+                },
+                order: {
+                    id: "DESC"
+                }
+            })
+
             return res.json(lancamentos)
         } catch (error) {
             console.log(error)
@@ -177,7 +162,7 @@ export default class DashboardController {
 
             for (let i=0; i < 12; i++){
 
-                let ano = 2022
+                let ano = (new Date(Date.now())).getFullYear()
                 let dadosMes = {name: `${meses[i]}/${ano}`, horaextra: 0, sobreaviso: 0}
 
                 let totalMinutosHE = 0
