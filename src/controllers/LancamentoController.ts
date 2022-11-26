@@ -100,7 +100,7 @@ export default class LancamentoController {
 
     async atualizarLancamento(req: Request, res: Response) {
         const { id } = req.params
-        const { modalidade, data_inicio, data_fim, acionado, observacoes, colaborador, gestor, projeto, verbas,  status } = req.body
+        const { modalidade, data_inicio, data_fim, acionado, observacoes, colaborador, gestor, projeto, verbas } = req.body
         let { data_inicio2, data_fim2, } = req.body
 
         if (acionado === "nao") {
@@ -109,7 +109,8 @@ export default class LancamentoController {
         }
 
         try {
-            const novoLancamento = AppDataSource.manager.create(Lancamento,{ id: Number(id), modalidade, data_inicio, data_fim, data_inicio2, data_fim2, observacoes, colaborador, gestor, projeto, verbas, status, acionado })
+            const novoLancamento = AppDataSource.manager.create(Lancamento,{ id: Number(id), modalidade, data_inicio, data_fim, data_inicio2, data_fim2, observacoes, colaborador, gestor, projeto, verbas, acionado })
+            novoLancamento.status = "pendente"
             await AppDataSource.manager.save(Lancamento, novoLancamento)
 
             return res.json(novoLancamento)
