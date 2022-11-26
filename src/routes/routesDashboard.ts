@@ -7,5 +7,6 @@ routesDashboard.get('/todosLancamentosColab/:matricula', new DashboardController
 routesDashboard.get('/todosLancamentosColabPeriodo/:matricula/:data1/:data2', new DashboardController().todosLancamentosColabPeriodo)
 routesDashboard.get('/todosLancamentosFiltro/:matricula/:cnpj/:numero', new DashboardController().todosLancamentosFiltro)
 routesDashboard.get('/graficoGeral', new DashboardController().graficoGeral)
+routesDashboard.get('/horasTrabalhadasProjeto/:id/:modalidade', new DashboardController().horasTrabalhadasProjeto)
 
 export default routesDashboard

@@ -5,6 +5,7 @@ import { Cliente } from "../entities/Cliente";
 import { Colaborador } from "../entities/Colaborador";
 import { CR } from "../entities/CR";
 import { Lancamento } from "../entities/Lancamento";
+import { Projeto } from "../entities/Projeto";
 
 function verificarDadoGrafico1(l: Lancamento, mes: number, ano: number, modalidade: String) {
     let totalMinutos = 0
@@ -195,6 +196,38 @@ export default class DashboardController {
             }
 
             return res.json(grafico)
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
+    }
+
+    async horasTrabalhadasProjeto(req: Request, res: Response){
+        const { id, modalidade } = req.params
+
+        try {
+
+            const projeto = await AppDataSource.manager.findOneBy(Projeto, { id: Number(id) })
+
+            const lancamentos = await AppDataSource.manager.find(Lancamento, {
+                where: { projeto: projeto },
+            })
+            
+            let totalMinutos = 0
+            lancamentos.forEach(
+                (l) => {
+                    if (l.modalidade.replace(' ', '') == modalidade) {
+                        totalMinutos += Math.round((l.data_fim.getTime() - l.data_inicio.getTime()) / 60000)
+                        if (l.acionado == 'sim'){
+                            totalMinutos += Math.round((l.data_fim2.getTime() - l.data_inicio2.getTime()) / 60000)
+                        }
+                    }
+                }
+            )
+
+            const horas = Math.floor(totalMinutos/60)
+
+            return res.json({horas})
         } catch (error) {
             console.log(error)
             return res.json({message: "Internal Server Error"})
