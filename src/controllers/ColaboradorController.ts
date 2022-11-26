@@ -70,9 +70,15 @@ export default class ColaboradorController {
         const { id } = req.params
 
         try {
-            const colaborador= await AppDataSource.manager.findOneBy(Colaborador, { matricula: Number(id) })
+        
+            const colaborador= await AppDataSource.manager.find(Colaborador, {
+                where: {matricula: Number(id)},
+                relations: {
+                    cr: true
+                }
+            })
 
-            return res.json(colaborador)
+            return res.json(colaborador[0])
         } catch (error) {
             console.log(error)
             return res.json({message: "Internal Server Error"})

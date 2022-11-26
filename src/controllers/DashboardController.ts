@@ -6,6 +6,7 @@ import { Colaborador } from "../entities/Colaborador";
 import { CR } from "../entities/CR";
 import { Lancamento } from "../entities/Lancamento";
 import { Projeto } from "../entities/Projeto";
+import { Verba } from "../entities/Verba";
 
 function verificarDadoGrafico1(l: Lancamento, mes: number, ano: number, modalidade: String) {
     let totalMinutos = 0
@@ -227,6 +228,48 @@ export default class DashboardController {
 
             const horas = Math.floor(totalMinutos/60)
 
+            return res.json({horas})
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
+    }
+
+    async horasLancamentoVerba(req: Request, res: Response){
+        const { matricula, modalidade, numero } = req.params
+
+        try {
+
+            const colaborador = await AppDataSource.manager.findOneBy(Colaborador, { matricula: Number(matricula) })
+
+            const lancamentos = await AppDataSource.manager.find(Lancamento, {
+                where: { colaborador: colaborador },
+                relations: {verbas: true}
+            })
+
+            const verba = await AppDataSource.manager.findOneBy(Verba, { numero: Number(numero) })
+
+            let totalMinutos = 0
+            lancamentos.forEach(
+                (l) => {
+                    const todasVerbas = []
+                    l.verbas.forEach(
+                        (v) => {
+                            todasVerbas.push(v.numero)
+                        }
+                    )
+                    if (todasVerbas.includes(verba.numero)) {
+                        if (l.modalidade.replace(' ', '') == modalidade) {
+                            totalMinutos += Math.round((l.data_fim.getTime() - l.data_inicio.getTime()) / 60000)
+                            if (l.acionado == 'sim'){
+                                totalMinutos += Math.round((l.data_fim2.getTime() - l.data_inicio2.getTime()) / 60000)
+                            }
+                        }
+                    }
+                }
+            )
+            const horas = Math.floor(totalMinutos/60)
+        
             return res.json({horas})
         } catch (error) {
             console.log(error)

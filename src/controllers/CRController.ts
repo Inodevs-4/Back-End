@@ -67,6 +67,7 @@ export default class CRController {
             const crs = await AppDataSource.manager.find(CR, {
                 relations: {
                     colaboradores: true,
+                    projeto: true
                 },
                 where: { numero: Number(numero) },
             })
