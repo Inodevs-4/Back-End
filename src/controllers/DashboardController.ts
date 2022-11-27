@@ -4,7 +4,7 @@ import { AppDataSource } from "../data-source"
 import { Cliente } from "../entities/Cliente";
 import { Colaborador } from "../entities/Colaborador";
 import { CR } from "../entities/CR";
-import { Lancamento } from "../entities/Lancamento";
+import { Lancamento, Modalidade } from "../entities/Lancamento";
 import { Projeto } from "../entities/Projeto";
 import { Verba } from "../entities/Verba";
 
@@ -60,10 +60,74 @@ export default class DashboardController {
     }
 
     async todosLancamentosColabPeriodo(req: Request, res: Response) {
-        const { matricula, data1, data2 } = req.params
+        const { matricula, data1, data2, modalidade } = req.params
+
+        let _modalidade = null
+        if (modalidade === "hora extra" || modalidade == "sobreaviso") {
+            _modalidade = modalidade as Modalidade 
+        }
 
         try {
             const colaborador = await AppDataSource.manager.findOneBy(Colaborador, { matricula: Number(matricula) })
+
+            if (data1 === "*" && data2 === "*") {
+                const lancamentos = await AppDataSource.manager.find(Lancamento, {
+                    relations: {
+                        colaborador: true,
+                        projeto: true,
+                        verbas: true,
+                        gestor: true
+                    },
+                    where: { 
+                        colaborador,
+                        modalidade: _modalidade,
+                    },
+                    order: {
+                        id: "DESC"
+                    }
+                })
+                return res.json(lancamentos)
+            }
+            
+            if (data2 === "*") {
+                const lancamentos = await AppDataSource.manager.find(Lancamento, {
+                    relations: {
+                        colaborador: true,
+                        projeto: true,
+                        verbas: true,
+                        gestor: true
+                    },
+                    where: { 
+                        colaborador,
+                        modalidade: _modalidade,
+                        data_inicio: MoreThanOrEqual(new Date(data1)),
+                    },
+                    order: {
+                        id: "DESC"
+                    }
+                })
+                return res.json(lancamentos)
+            }
+
+            if (data1 === "*") {
+                const lancamentos = await AppDataSource.manager.find(Lancamento, {
+                    relations: {
+                        colaborador: true,
+                        projeto: true,
+                        verbas: true,
+                        gestor: true
+                    },
+                    where: { 
+                        colaborador,
+                        modalidade: _modalidade,
+                        data_fim: LessThanOrEqual(new Date(data2)),
+                    },
+                    order: {
+                        id: "DESC"
+                    }
+                })
+                return res.json(lancamentos)
+            }
 
             const lancamentos = await AppDataSource.manager.find(Lancamento, {
                 relations: {
@@ -74,6 +138,7 @@ export default class DashboardController {
                 },
                 where: { 
                     colaborador,
+                    modalidade: _modalidade,
                     data_inicio: MoreThanOrEqual(new Date(data1)),
                     data_fim: LessThanOrEqual(new Date(data2))
                 },
@@ -81,7 +146,6 @@ export default class DashboardController {
                     id: "DESC"
                 }
             })
-            console.log
             return res.json(lancamentos)
         } catch (error) {
             console.log(error)
@@ -130,6 +194,83 @@ export default class DashboardController {
         }
     }
 
+    async graficoIndividual(req: Request, res: Response) {
+        const { matricula } = req.params
+
+        try {
+            const colaborador = await AppDataSource.manager.findOneBy(Colaborador, { matricula: Number(matricula) })
+
+            const lancamentos = await AppDataSource.manager.find(Lancamento, {
+                relations: {
+                    colaborador: true,
+                    projeto: true,
+                    verbas: true,
+                    gestor: true
+                },
+                where: {
+                    colaborador
+                },
+                order: {
+                    id: "DESC"
+                }
+            })
+
+            let grafico = []
+            const meses = {
+                0: "jan",
+                1: "fev",
+                2: "mar",
+                3: "abr",
+                4: "mai",
+                5: "jun",
+                6: "jul",
+                7: "ago",
+                8: "set",
+                9: "out",
+                10: "nov",
+                11: "dez"
+            }
+
+            for (let i=0; i < 12; i++){
+
+                let ano = (new Date(Date.now())).getFullYear()
+                let dadosMes = {name: `${meses[i]}/${ano}`, horaextra: 0, sobreaviso: 0}
+
+                let totalMinutosHE = 0
+                lancamentos.forEach(
+                    (l) => {
+                        if(l.data_fim2) {
+                            totalMinutosHE += verificarDadoGrafico2(l, i, ano, "hora extra")
+                        } else {
+                            totalMinutosHE += verificarDadoGrafico1(l, i, ano, "hora extra")
+                        }
+                    }
+                )
+
+                dadosMes.horaextra = Math.floor(totalMinutosHE/60)
+
+                let totalMinutosS = 0
+                lancamentos.forEach(
+                    (l) => {
+                        if(l.data_fim2) {
+                            totalMinutosS += verificarDadoGrafico2(l, i, ano, "sobreaviso")
+                        } else {
+                            totalMinutosS += verificarDadoGrafico1(l, i, ano, "sobreaviso")
+                        }
+                    }
+                )
+
+                dadosMes.sobreaviso = Math.floor(totalMinutosS/60)
+
+                grafico.push(dadosMes)
+            }
+
+            return res.json(grafico)
+        } catch (error) {
+            console.log(error)
+            return res.json({message: "Internal Server Error"})
+        }
+    }
 
     async graficoGeral(req: Request, res: Response) {
         
