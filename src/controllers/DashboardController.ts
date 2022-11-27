@@ -20,18 +20,6 @@ function verificarDadoGrafico1(l: Lancamento, mes: number, ano: number, modalida
     return totalMinutos
 }
 
-function verificarDadoGrafico2(l: Lancamento, mes: number, ano: number, modalidade: String) {
-    let totalMinutos = 0
-
-    if (l.modalidade == modalidade && l.data_fim2.getMonth() == mes && l.data_fim2.getFullYear() == ano) {
-        totalMinutos += Math.round((l.data_fim.getTime() - l.data_inicio.getTime()) / 60000)
-        if (l.acionado == 'sim'){
-            totalMinutos += Math.round((l.data_fim2.getTime() - l.data_inicio2.getTime()) / 60000)
-        }
-    }
-    return totalMinutos
-}
-
 export default class DashboardController {
 
     async todosLancamentosColab(req: Request, res: Response) {
@@ -239,11 +227,7 @@ export default class DashboardController {
                 let totalMinutosHE = 0
                 lancamentos.forEach(
                     (l) => {
-                        if(l.data_fim2) {
-                            totalMinutosHE += verificarDadoGrafico2(l, i, ano, "hora extra")
-                        } else {
-                            totalMinutosHE += verificarDadoGrafico1(l, i, ano, "hora extra")
-                        }
+                        totalMinutosHE += verificarDadoGrafico1(l, i, ano, "hora extra")
                     }
                 )
 
@@ -252,11 +236,7 @@ export default class DashboardController {
                 let totalMinutosS = 0
                 lancamentos.forEach(
                     (l) => {
-                        if(l.data_fim2) {
-                            totalMinutosS += verificarDadoGrafico2(l, i, ano, "sobreaviso")
-                        } else {
-                            totalMinutosS += verificarDadoGrafico1(l, i, ano, "sobreaviso")
-                        }
+                        totalMinutosS += verificarDadoGrafico1(l, i, ano, "sobreaviso")
                     }
                 )
 
@@ -311,11 +291,7 @@ export default class DashboardController {
                 let totalMinutosHE = 0
                 lancamentos.forEach(
                     (l) => {
-                        if(l.data_fim2) {
-                            totalMinutosHE += verificarDadoGrafico2(l, i, ano, "hora extra")
-                        } else {
-                            totalMinutosHE += verificarDadoGrafico1(l, i, ano, "hora extra")
-                        }
+                        totalMinutosHE += verificarDadoGrafico1(l, i, ano, "hora extra")
                     }
                 )
 
@@ -324,11 +300,7 @@ export default class DashboardController {
                 let totalMinutosS = 0
                 lancamentos.forEach(
                     (l) => {
-                        if(l.data_fim2) {
-                            totalMinutosS += verificarDadoGrafico2(l, i, ano, "sobreaviso")
-                        } else {
-                            totalMinutosS += verificarDadoGrafico1(l, i, ano, "sobreaviso")
-                        }
+                        totalMinutosS += verificarDadoGrafico1(l, i, ano, "sobreaviso")
                     }
                 )
 
